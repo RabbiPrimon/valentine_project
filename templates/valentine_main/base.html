@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Happy Valentine's Day! Celebrate love with our beautiful Valentine's Day website featuring animations, gallery, and more.">
+    <title>{% block title %}Happy Valentine's Day!{% endblock %}</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'valentine_main:home' %}" class="nav-logo">
+                <i class="fas fa-heart"></i> Valentine's Day
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="{% url 'valentine_main:home' %}" class="nav-link">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'valentine_main:gallery' %}" class="nav-link">
+                        <i class="fas fa-images"></i> Gallery
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/" class="nav-link" target="_blank">
+                        <i class="fas fa-user-shield"></i> Admin
+                    </a>
+                </li>
+            </ul>
+            <div class="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>Made with <i class="fas fa-heart"></i> for Valentine's Day</p>
+            <p>&copy; 2024 Valentine's Day Website. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Floating Hearts Container -->
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+    <!-- Confetti Container -->
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <!-- Audio Player (Muted by Default) -->
+    <div class="audio-player" id="audioPlayer">
+        <button class="audio-toggle" id="audioToggle" aria-label="Toggle Music">
+            <i class="fas fa-music"></i>
+        </button>
+        <audio id="bgMusic" loop>
+            <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="{% static 'js/script.js' %}"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

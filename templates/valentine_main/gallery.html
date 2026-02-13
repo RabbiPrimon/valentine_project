@@ -1,0 +1,293 @@
+{% extends 'valentine_main/base.html' %}
+{% load static %}
+
+{% block title %}Photo Gallery - Valentine's Day{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Gallery page styles */
+    .gallery-header {
+        min-height: 50vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(135deg, #ff6b9d 0%, #c44569 50%, #9b59b6 100%);
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .gallery-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50%" font-size="30">💕</text></svg>');
+        opacity: 0.1;
+        animation: float 20s linear infinite;
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-100px); }
+    }
+
+    .gallery-title {
+        font-family: 'Dancing Script', cursive;
+        font-size: 4rem;
+        color: #fff;
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        margin-bottom: 1rem;
+        z-index: 1;
+    }
+
+    .gallery-subtitle {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.9);
+        z-index: 1;
+    }
+
+    /* Gallery grid */
+    .gallery-section {
+        padding: 4rem 2rem;
+        background: linear-gradient(180deg, #ffe3e8 0%, #fff5f7 100%);
+        min-height: 100vh;
+    }
+
+    .gallery-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        padding: 2rem 0;
+    }
+
+    .gallery-item {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(196, 69, 105, 0.2);
+        transition: all 0.4s ease;
+        background: #fff;
+    }
+
+    .gallery-item:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(196, 69, 105, 0.3);
+    }
+
+    .gallery-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .gallery-item:hover .gallery-image {
+        transform: scale(1.1);
+    }
+
+    .gallery-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to top, rgba(196, 69, 105, 0.9), transparent);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 1.5rem;
+    }
+
+    .gallery-item:hover .gallery-overlay {
+        opacity: 1;
+    }
+
+    .gallery-caption {
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .gallery-caption h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .gallery-caption p {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    /* Placeholder images */
+    .placeholder-gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        padding: 2rem 0;
+    }
+
+    .placeholder-item {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(196, 69, 105, 0.2);
+        transition: all 0.4s ease;
+        background: linear-gradient(135deg, #ff6b9d 0%, #c44569 50%, #9b59b6 100%);
+        height: 250px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .placeholder-item:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(196, 69, 105, 0.4);
+    }
+
+    .placeholder-icon {
+        font-size: 4rem;
+        color: #fff;
+        margin-bottom: 1rem;
+    }
+
+    .placeholder-text {
+        font-family: 'Dancing Script', cursive;
+        font-size: 1.5rem;
+        color: #fff;
+        text-align: center;
+        padding: 0 1rem;
+    }
+
+    /* Empty state */
+    .empty-gallery {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .empty-icon {
+        font-size: 5rem;
+        color: #ff6b9d;
+        margin-bottom: 1rem;
+    }
+
+    .empty-text {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.2rem;
+        color: #666;
+    }
+
+    .upload-btn {
+        display: inline-block;
+        margin-top: 1.5rem;
+        padding: 1rem 2rem;
+        background: linear-gradient(45deg, #ff6b9d, #c44569);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 50px;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .upload-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(255, 107, 157, 0.5);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .gallery-title {
+            font-size: 2.5rem;
+        }
+        
+        .gallery-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Gallery Header -->
+<header class="gallery-header">
+    <h1 class="gallery-title">💕 Photo Gallery 💕</h1>
+    <p class="gallery-subtitle">Celebrate love with beautiful memories</p>
+</header>
+
+<!-- Gallery Section -->
+<section class="gallery-section">
+    <div class="gallery-container">
+        {% if images %}
+        <div class="gallery-grid">
+            {% for image in images %}
+            <div class="gallery-item">
+                <img src="{{ image.image.url }}" alt="{{ image.title }}" class="gallery-image">
+                <div class="gallery-overlay">
+                    <div class="gallery-caption">
+                        <h3>{{ image.title }}</h3>
+                        {% if image.description %}
+                        <p>{{ image.description }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Placeholder images for demonstration -->
+        <div class="placeholder-gallery">
+            <div class="placeholder-item">
+                <i class="fas fa-heart placeholder-icon"></i>
+                <p class="placeholder-text">Love is in the air</p>
+            </div>
+            <div class="placeholder-item">
+                <i class="fas fa-ring placeholder-icon"></i>
+                <p class="placeholder-text">Forever Together</p>
+            </div>
+            <div class="placeholder-item">
+                <i class="fas fa-glass-cheers placeholder-icon"></i>
+                <p class="placeholder-text">Celebration of Love</p>
+            </div>
+            <div class="placeholder-item">
+                <i class="fas fa-heartbeat placeholder-icon"></i>
+                <p class="placeholder-text">My Heart Beats for You</p>
+            </div>
+            <div class="placeholder-item">
+                <i class="fas fa-star placeholder-icon"></i>
+                <p class="placeholder-text">You are my Star</p>
+            </div>
+            <div class="placeholder-item">
+                <i class="fas fa-music placeholder-icon"></i>
+                <p class="placeholder-text">Our Song</p>
+            </div>
+        </div>
+        
+        <div class="empty-gallery">
+            <i class="fas fa-images empty-icon"></i>
+            <p class="empty-text">No images in gallery yet!</p>
+            <p style="color: #999; margin-top: 0.5rem;">Upload images through the admin panel to see them here.</p>
+            <a href="/admin/" class="upload-btn" target="_blank">
+                <i class="fas fa-upload"></i> Upload Images
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

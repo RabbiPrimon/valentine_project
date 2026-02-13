@@ -1,0 +1,472 @@
+{% extends 'valentine_main/base.html' %}
+{% load static %}
+
+{% block title %}Happy Valentine's Day! - Home{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Additional styles for home page */
+    .hero-section {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        padding: 2rem;
+    }
+
+    /* Animated gradient background */
+    .hero-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, #ff6b9d, #c44569, #546de5, #9b59b6, #e84393, #fd79a8);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        z-index: -2;
+    }
+
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Floating hearts animation */
+    .heart {
+        position: absolute;
+        font-size: 2rem;
+        color: #ff6b9d;
+        animation: floatUp 6s ease-in-out infinite;
+        opacity: 0.7;
+        z-index: -1;
+    }
+
+    @keyframes floatUp {
+        0% {
+            transform: translateY(100vh) scale(0);
+            opacity: 0;
+        }
+        10% {
+            opacity: 0.7;
+        }
+        90% {
+            opacity: 0.7;
+        }
+        100% {
+            transform: translateY(-100px) scale(1);
+            opacity: 0;
+        }
+    }
+
+    /* Pulsing text with rainbow colors */
+    .hero-title {
+        font-family: 'Dancing Script', cursive;
+        font-size: 5rem;
+        font-weight: 700;
+        color: #fff;
+        text-shadow: 0 0 20px rgba(255, 107, 157, 0.8), 
+                     0 0 40px rgba(255, 107, 157, 0.6),
+                     0 0 60px rgba(255, 107, 157, 0.4);
+        animation: rainbowPulse 3s ease-in-out infinite;
+        margin-bottom: 1rem;
+    }
+
+    @keyframes rainbowPulse {
+        0% { color: #ff6b9d; }
+        16% { color: #ff9ff3; }
+        33% { color: #feca57; }
+        50% { color: #48dbfb; }
+        66% { color: #1dd1a1; }
+        83% { color: #5f27cd; }
+        100% { color: #ff6b9d; }
+    }
+
+    .hero-subtitle {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.5rem;
+        color: #fff;
+        margin-bottom: 2rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Countdown Timer */
+    .countdown-container {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem;
+        margin: 2rem 0;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .countdown-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.2rem;
+        color: #fff;
+        margin-bottom: 1rem;
+    }
+
+    .countdown {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .countdown-item {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        padding: 1rem 1.5rem;
+        min-width: 100px;
+    }
+
+    .countdown-number {
+        font-family: 'Dancing Script', cursive;
+        font-size: 3rem;
+        font-weight: 700;
+        color: #fff;
+        display: block;
+    }
+
+    .countdown-label {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Love Message Box */
+    .love-message-box {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 2rem;
+        max-width: 600px;
+        margin: 2rem auto;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .love-message-text {
+        font-family: 'Dancing Script', cursive;
+        font-size: 1.8rem;
+        color: #c44569;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .love-message-author {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
+        color: #666;
+        text-align: center;
+    }
+
+    .new-message-btn {
+        display: block;
+        margin: 1rem auto 0;
+        padding: 0.8rem 2rem;
+        background: linear-gradient(45deg, #ff6b9d, #c44569);
+        color: #fff;
+        border: none;
+        border-radius: 25px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .new-message-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(255, 107, 157, 0.5);
+    }
+
+    /* Floating Notes */
+    .floating-notes {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 100;
+        overflow: hidden;
+    }
+
+    .floating-note {
+        position: absolute;
+        font-family: 'Dancing Script', cursive;
+        font-size: 1.5rem;
+        color: #fff;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        animation: floatAround 15s ease-in-out infinite;
+        white-space: nowrap;
+    }
+
+    @keyframes floatAround {
+        0%, 100% {
+            transform: translate(0, 0) rotate(0deg);
+        }
+        25% {
+            transform: translate(100px, -100px) rotate(10deg);
+        }
+        50% {
+            transform: translate(-50px, -200px) rotate(-5deg);
+        }
+        75% {
+            transform: translate(150px, -50px) rotate(5deg);
+        }
+    }
+
+    /* Confetti */
+    .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        animation: confettiFall 5s ease-in-out infinite;
+    }
+
+    @keyframes confettiFall {
+        0% {
+            transform: translateY(-100vh) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+
+    /* CTA Buttons */
+    .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+
+    .cta-btn {
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+    }
+
+    .cta-btn-primary {
+        background: linear-gradient(45deg, #ff6b9d, #c44569);
+        color: #fff;
+        box-shadow: 0 5px 20px rgba(255, 107, 157, 0.4);
+    }
+
+    .cta-btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(255, 107, 157, 0.6);
+    }
+
+    .cta-btn-secondary {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        border: 2px solid #fff;
+    }
+
+    .cta-btn-secondary:hover {
+        background: #fff;
+        color: #c44569;
+    }
+
+    /* Interactive elements */
+    .heart-cursor {
+        cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%23ff6b9d"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'), auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 3rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+        }
+        
+        .countdown-item {
+            min-width: 80px;
+            padding: 0.8rem 1rem;
+        }
+        
+        .countdown-number {
+            font-size: 2rem;
+        }
+        
+        .love-message-text {
+            font-size: 1.4rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero-section heart-cursor">
+    <!-- Animated gradient background -->
+    <div class="hero-background"></div>
+    
+    <!-- Main content -->
+    <h1 class="hero-title">Happy Valentine's Day!</h1>
+    <p class="hero-subtitle">Celebrate love with us</p>
+    
+    <!-- Countdown Timer -->
+    <div class="countdown-container">
+        <h2 class="countdown-title">Countdown to Valentine's Day</h2>
+        <div class="countdown">
+            <div class="countdown-item">
+                <span class="countdown-number" id="days">{{ days_until }}</span>
+                <span class="countdown-label">Days</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="hours">{{ hours_until }}</span>
+                <span class="countdown-label">Hours</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="minutes">{{ minutes_until }}</span>
+                <span class="countdown-label">Minutes</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Love Message Box -->
+    {% if random_message %}
+    <div class="love-message-box">
+        <p class="love-message-text" id="loveMessage">{{ random_message.message }}</p>
+        {% if random_message.author %}
+        <p class="love-message-author">- {{ random_message.author }}</p>
+        {% endif %}
+        <button class="new-message-btn" onclick="getNewMessage()">
+            <i class="fas fa-heart"></i> New Message
+        </button>
+    </div>
+    {% endif %}
+    
+    <!-- CTA Buttons -->
+    <div class="cta-buttons">
+        <a href="{% url 'valentine_main:gallery' %}" class="cta-btn cta-btn-primary">
+            <i class="fas fa-images"></i> View Gallery
+        </a>
+        <a href="/admin/" class="cta-btn cta-btn-secondary" target="_blank">
+            <i class="fas fa-user-shield"></i> Admin Panel
+        </a>
+    </div>
+    
+    <!-- Floating Notes Container -->
+    <div class="floating-notes" id="floatingNotes"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Create floating hearts
+    function createFloatingHearts() {
+        const container = document.getElementById('floatingHearts');
+        const heartSymbols = ['💕', '💖', '💗', '💓', '💞', '💘', '❤️', '💝'];
+        
+        setInterval(() => {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            heart.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
+            container.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
+        }, 800);
+    }
+    
+    // Create confetti
+    function createConfetti() {
+        const container = document.getElementById('confettiContainer');
+        const colors = ['#ff6b9d', '#feca57', '#48dbfb', '#1dd1a1', '#9b59b6', '#ff9ff3'];
+        
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDelay = Math.random() * 5 + 's';
+            confetti.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+            container.appendChild(confetti);
+        }
+    }
+    
+    // Get new love message
+    function getNewMessage() {
+        fetch('{% url "valentine_main:get_love_message" %}')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loveMessage').textContent = data.message;
+            })
+            .catch(error => console.error('Error fetching message:', error));
+    }
+    
+    // Create floating notes
+    function createFloatingNotes() {
+        const container = document.getElementById('floatingNotes');
+        
+        fetch('{% url "valentine_main:get_floating_notes" %}')
+            .then(response => response.json())
+            .then(data => {
+                data.notes.forEach((note, index) => {
+                    const noteEl = document.createElement('div');
+                    noteEl.className = 'floating-note';
+                    noteEl.textContent = note;
+                    noteEl.style.left = (Math.random() * 80 + 10) + 'vw';
+                    noteEl.style.top = (Math.random() * 60 + 20) + 'vh';
+                    noteEl.style.animationDelay = (index * 2) + 's';
+                    container.appendChild(noteEl);
+                });
+            })
+            .catch(error => console.error('Error fetching notes:', error));
+    }
+    
+    // Mouse movement effect
+    function createMouseTrail() {
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.9) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '💕';
+                heart.style.position = 'fixed';
+                heart.style.left = e.clientX + 'px';
+                heart.style.top = e.clientY + 'px';
+                heart.style.pointerEvents = 'none';
+                heart.style.fontSize = '1rem';
+                heart.style.animation = 'floatUp 2s ease-out forwards';
+                document.body.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 2000);
+            }
+        });
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        createFloatingHearts();
+        createConfetti();
+        createFloatingNotes();
+        createMouseTrail();
+    });
+</script>
+{% endblock %}
